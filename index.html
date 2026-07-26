@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="HARD75 — a private, mobile-first 75-day discipline tracker." />
+  <title>HARD75</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">GOD 1ST • FAMILY 2ND • EVERYTHING ELSE 3RD</p>
+        <h1>HARD<span>75</span></h1>
+      </div>
+      <button id="settingsBtn" class="icon-btn" aria-label="Open settings">⚙</button>
+    </header>
+
+    <main>
+      <section class="hero card">
+        <div>
+          <p id="todayLabel" class="muted">TODAY</p>
+          <h2 id="dayTitle">Day 1 of 75</h2>
+          <p id="statusText">Win today. One requirement at a time.</p>
+        </div>
+        <div class="progress-ring" id="progressRing" aria-label="Daily completion">
+          <div>
+            <strong id="progressPct">0%</strong>
+            <span>DONE</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="warningCard" class="warning card hidden" role="alert">
+        <strong>Restart required</strong>
+        <p>A previous challenge day is incomplete. In strict mode, a missed requirement means returning to Day 1.</p>
+        <button id="restartFromWarning" class="danger-btn">Restart challenge</button>
+      </section>
+
+      <section class="stats-grid">
+        <article class="mini-card"><span>Current day</span><strong id="statDay">1</strong></article>
+        <article class="mini-card"><span>Days won</span><strong id="statWon">0</strong></article>
+        <article class="mini-card"><span>Days left</span><strong id="statLeft">75</strong></article>
+        <article class="mini-card"><span>Restarts</span><strong id="statRestarts">0</strong></article>
+      </section>
+
+      <section class="section-heading">
+        <div><p class="eyebrow">TODAY'S WORK</p><h2>Daily requirements</h2></div>
+        <button id="resetTodayBtn" class="text-btn">Reset today</button>
+      </section>
+
+      <section class="tasks" id="tasks">
+        <article class="task-card" data-task="diet">
+          <button class="check-btn" data-check="diet" aria-label="Toggle diet requirement">✓</button>
+          <div class="task-copy">
+            <h3>Follow the plan</h3>
+            <p>Stay on your chosen diet. No cheat meals. No alcohol.</p>
+          </div>
+        </article>
+
+        <article class="task-card" data-task="workout1">
+          <button class="check-btn" data-check="workout1" aria-label="Toggle first workout">✓</button>
+          <div class="task-copy grow">
+            <h3>Workout #1</h3>
+            <p>45 minutes. Gym, strength, WOD, cardio, or recovery work.</p>
+            <div class="timer-row">
+              <span id="timer1">45:00</span>
+              <button class="small-btn" data-timer="workout1">Start timer</button>
+              <button class="small-btn ghost" data-timer-reset="workout1">Reset</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="task-card" data-task="workout2">
+          <button class="check-btn" data-check="workout2" aria-label="Toggle outdoor workout">✓</button>
+          <div class="task-copy grow">
+            <h3>Workout #2 • Outdoors</h3>
+            <p>45 minutes outside. A family or dog walk absolutely counts when it meets your workout standard.</p>
+            <div class="timer-row">
+              <span id="timer2">45:00</span>
+              <button class="small-btn" data-timer="workout2">Start timer</button>
+              <button class="small-btn ghost" data-timer-reset="workout2">Reset</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="task-card water-card" data-task="water">
+          <div class="water-icon">💧</div>
+          <div class="task-copy grow">
+            <div class="task-title-row"><h3>Water</h3><strong id="waterReadout">0 / 128 oz</strong></div>
+            <div class="meter"><span id="waterMeter"></span></div>
+            <div class="quick-row">
+              <button class="small-btn" data-water="16">+16 oz</button>
+              <button class="small-btn" data-water="20">+20 oz</button>
+              <button class="small-btn" data-water="32">+32 oz</button>
+              <button class="small-btn ghost" data-water="-16">−16</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="task-card reading-card" data-task="reading">
+          <div class="book-icon">▤</div>
+          <div class="task-copy grow">
+            <div class="task-title-row"><h3>Read 10 pages</h3><strong id="pagesReadout">0 / 10</strong></div>
+            <p>Nonfiction / personal-development reading for the challenge.</p>
+            <div class="quick-row">
+              <button class="small-btn" data-pages="1">+1 page</button>
+              <button class="small-btn" data-pages="5">+5 pages</button>
+              <button class="small-btn ghost" data-pages="-1">−1</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="task-card" data-task="photo">
+          <button class="check-btn" data-check="photo" aria-label="Toggle progress photo">✓</button>
+          <div class="task-copy">
+            <h3>Progress photo</h3>
+            <p>Take today's photo. The app records the checkoff, not the image itself.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="faith card">
+        <div class="faith-top">
+          <div><p class="eyebrow">FAITH • BONUS HABIT</p><h2 id="verseRef">1 Corinthians 9:27</h2></div>
+          <button id="faithCheck" class="faith-check">Prayer + Scripture ○</button>
+        </div>
+        <p id="faithPrompt">Discipline your body instead of letting your impulses lead the day.</p>
+      </section>
+
+      <section class="notes card">
+        <label for="notes"><span class="eyebrow">DAILY NOTES</span><strong>What did you learn today?</strong></label>
+        <textarea id="notes" rows="4" maxlength="800" placeholder="Workout notes, wins, temptations, gratitude, prayer..."></textarea>
+      </section>
+
+      <button id="completeDayBtn" class="complete-btn" disabled>Finish all requirements to win today</button>
+
+      <section class="history-section">
+        <div class="section-heading"><div><p class="eyebrow">THE 75</p><h2>Challenge map</h2></div></div>
+        <div id="historyGrid" class="history-grid" aria-label="75 day challenge history"></div>
+        <div class="legend"><span><i class="dot won"></i>Won</span><span><i class="dot current"></i>Current</span><span><i class="dot partial"></i>Started</span><span><i class="dot future"></i>Future</span></div>
+      </section>
+
+      <section class="data-actions card">
+        <div><h3>Your data belongs to you</h3><p>Export a backup or restore one later.</p></div>
+        <div class="quick-row">
+          <button id="exportBtn" class="small-btn">Export backup</button>
+          <label class="small-btn ghost file-label">Import backup<input id="importInput" type="file" accept="application/json" /></label>
+        </div>
+      </section>
+    </main>
+
+    <footer>HARD75 • Built for consistency, not perfection.</footer>
+  </div>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="dialog-card" id="settingsForm">
+      <div class="dialog-head"><div><p class="eyebrow">SETTINGS</p><h2>Your challenge</h2></div><button value="cancel" class="icon-btn" aria-label="Close settings">×</button></div>
+      <label>Name<input id="nameInput" type="text" maxlength="40" placeholder="Joshua" /></label>
+      <label>Start date<input id="startDateInput" type="date" /></label>
+      <label>Daily water goal (oz)<input id="waterGoalInput" type="number" min="1" max="256" step="1" /></label>
+      <label class="switch-row"><span><strong>Strict mode</strong><small>Flag a restart if any past day is incomplete.</small></span><input id="strictInput" type="checkbox" /></label>
+      <button id="saveSettingsBtn" value="default" class="complete-btn">Save settings</button>
+      <button id="restartBtn" value="cancel" type="button" class="danger-outline">Restart challenge from Day 1</button>
+    </form>
+  </dialog>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
