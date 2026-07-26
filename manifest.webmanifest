@@ -1,0 +1,9 @@
+{
+  "name": "HARD75 Tracker",
+  "short_name": "HARD75",
+  "description": "Simple 75-day discipline tracker with floor and ceiling workouts, meal plans, water, reading, progress photos, and faith habits.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#0f172a"
+}
