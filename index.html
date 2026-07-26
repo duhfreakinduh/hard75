@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <meta name="description" content="HARD75 — a private, mobile-first 75-day discipline tracker." />
+  <meta name="description" content="HARD75 — a simple mobile-first 75-day tracker with meals and workouts." />
   <title>HARD75</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app-shell">
-    <header class="topbar">
+    <header class="topbar" id="top">
       <div>
         <p class="eyebrow">GOD 1ST • FAMILY 2ND • EVERYTHING ELSE 3RD</p>
         <h1>HARD<span>75</span></h1>
@@ -27,10 +27,7 @@
           <p id="statusText">Win today. One requirement at a time.</p>
         </div>
         <div class="progress-ring" id="progressRing" aria-label="Daily completion">
-          <div>
-            <strong id="progressPct">0%</strong>
-            <span>DONE</span>
-          </div>
+          <div><strong id="progressPct">0%</strong><span>DONE</span></div>
         </div>
       </section>
 
@@ -47,43 +44,73 @@
         <article class="mini-card"><span>Restarts</span><strong id="statRestarts">0</strong></article>
       </section>
 
-      <section class="section-heading">
-        <div><p class="eyebrow">TODAY'S WORK</p><h2>Daily requirements</h2></div>
+      <section class="section-heading" id="plan">
+        <div><p class="eyebrow">NO GUESSING</p><h2>Today's game plan</h2></div>
+      </section>
+
+      <section class="plan-stack">
+        <article class="plan-card meal-plan" id="mealPlanCard">
+          <div class="plan-head">
+            <div><span class="plan-icon">🍽</span><div><p class="eyebrow">MEALS</p><h2 id="mealPlanTitle">Simple high-protein day</h2></div></div>
+            <span class="plan-badge">DAY <b id="mealPlanDay">1</b></span>
+          </div>
+          <p class="plan-note" id="mealPlanNote">Protein first. Simple foods. Repeatable portions.</p>
+          <div id="mealPlanList" class="plan-list"></div>
+          <details class="prep-details">
+            <summary>Prep + grocery shortcut</summary>
+            <div id="mealPrepText" class="detail-body"></div>
+          </details>
+        </article>
+
+        <article class="plan-card workout-plan" id="workoutPlanCard">
+          <div class="plan-head">
+            <div><span class="plan-icon">🏋</span><div><p class="eyebrow">WORKOUT #1 • 45 MIN</p><h2 id="gymPlanTitle">Planet Fitness</h2></div></div>
+            <span class="plan-badge">GYM</span>
+          </div>
+          <div id="gymPlanList" class="exercise-list"></div>
+          <div class="plan-action-row">
+            <button class="small-btn" data-jump="workout1">Go to timer</button>
+            <span id="gymFocus" class="muted small-copy"></span>
+          </div>
+        </article>
+
+        <article class="plan-card outdoor-plan">
+          <div class="plan-head">
+            <div><span class="plan-icon">🚶</span><div><p class="eyebrow">WORKOUT #2 • 45 MIN • OUTSIDE</p><h2 id="outdoorPlanTitle">Family / dog walk</h2></div></div>
+            <span class="plan-badge">OUTDOOR</span>
+          </div>
+          <div id="outdoorPlanList" class="exercise-list"></div>
+          <div class="plan-action-row">
+            <button class="small-btn" data-jump="workout2">Go to timer</button>
+            <span class="muted small-copy">Keep it sustainable. The goal is to finish.</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-heading" id="today">
+        <div><p class="eyebrow">TAP IT • DONE</p><h2>Daily checklist</h2></div>
         <button id="resetTodayBtn" class="text-btn">Reset today</button>
       </section>
 
       <section class="tasks" id="tasks">
         <article class="task-card" data-task="diet">
           <button class="check-btn" data-check="diet" aria-label="Toggle diet requirement">✓</button>
-          <div class="task-copy">
-            <h3>Follow the plan</h3>
-            <p>Stay on your chosen diet. No cheat meals. No alcohol.</p>
-          </div>
+          <div class="task-copy"><h3>Follow the meal plan</h3><p>No cheat meals. No alcohol. Keep it simple.</p></div>
         </article>
 
-        <article class="task-card" data-task="workout1">
+        <article class="task-card" data-task="workout1" id="workout1Task">
           <button class="check-btn" data-check="workout1" aria-label="Toggle first workout">✓</button>
           <div class="task-copy grow">
-            <h3>Workout #1</h3>
-            <p>45 minutes. Gym, strength, WOD, cardio, or recovery work.</p>
-            <div class="timer-row">
-              <span id="timer1">45:00</span>
-              <button class="small-btn" data-timer="workout1">Start timer</button>
-              <button class="small-btn ghost" data-timer-reset="workout1">Reset</button>
-            </div>
+            <h3>Workout #1</h3><p>45 minutes from today's plan.</p>
+            <div class="timer-row"><span id="timer1">45:00</span><button class="small-btn" data-timer="workout1">Start timer</button><button class="small-btn ghost" data-timer-reset="workout1">Reset</button></div>
           </div>
         </article>
 
-        <article class="task-card" data-task="workout2">
+        <article class="task-card" data-task="workout2" id="workout2Task">
           <button class="check-btn" data-check="workout2" aria-label="Toggle outdoor workout">✓</button>
           <div class="task-copy grow">
-            <h3>Workout #2 • Outdoors</h3>
-            <p>45 minutes outside. A family or dog walk absolutely counts when it meets your workout standard.</p>
-            <div class="timer-row">
-              <span id="timer2">45:00</span>
-              <button class="small-btn" data-timer="workout2">Start timer</button>
-              <button class="small-btn ghost" data-timer-reset="workout2">Reset</button>
-            </div>
+            <h3>Workout #2 • Outdoors</h3><p>45 minutes outside. Family and pet walks fit perfectly.</p>
+            <div class="timer-row"><span id="timer2">45:00</span><button class="small-btn" data-timer="workout2">Start timer</button><button class="small-btn ghost" data-timer-reset="workout2">Reset</button></div>
           </div>
         </article>
 
@@ -92,12 +119,7 @@
           <div class="task-copy grow">
             <div class="task-title-row"><h3>Water</h3><strong id="waterReadout">0 / 128 oz</strong></div>
             <div class="meter"><span id="waterMeter"></span></div>
-            <div class="quick-row">
-              <button class="small-btn" data-water="16">+16 oz</button>
-              <button class="small-btn" data-water="20">+20 oz</button>
-              <button class="small-btn" data-water="32">+32 oz</button>
-              <button class="small-btn ghost" data-water="-16">−16</button>
-            </div>
+            <div class="quick-row"><button class="small-btn" data-water="16">+16 oz</button><button class="small-btn" data-water="20">+20 oz</button><button class="small-btn" data-water="32">+32 oz</button><button class="small-btn ghost" data-water="-16">−16</button></div>
           </div>
         </article>
 
@@ -106,20 +128,13 @@
           <div class="task-copy grow">
             <div class="task-title-row"><h3>Read 10 pages</h3><strong id="pagesReadout">0 / 10</strong></div>
             <p>Nonfiction / personal-development reading for the challenge.</p>
-            <div class="quick-row">
-              <button class="small-btn" data-pages="1">+1 page</button>
-              <button class="small-btn" data-pages="5">+5 pages</button>
-              <button class="small-btn ghost" data-pages="-1">−1</button>
-            </div>
+            <div class="quick-row"><button class="small-btn" data-pages="1">+1 page</button><button class="small-btn" data-pages="5">+5 pages</button><button class="small-btn ghost" data-pages="-1">−1</button></div>
           </div>
         </article>
 
         <article class="task-card" data-task="photo">
           <button class="check-btn" data-check="photo" aria-label="Toggle progress photo">✓</button>
-          <div class="task-copy">
-            <h3>Progress photo</h3>
-            <p>Take today's photo. The app records the checkoff, not the image itself.</p>
-          </div>
+          <div class="task-copy"><h3>Progress photo</h3><p>Take today's photo. The app stores the checkoff, not the image.</p></div>
         </article>
       </section>
 
@@ -138,7 +153,7 @@
 
       <button id="completeDayBtn" class="complete-btn" disabled>Finish all requirements to win today</button>
 
-      <section class="history-section">
+      <section class="history-section" id="progress">
         <div class="section-heading"><div><p class="eyebrow">THE 75</p><h2>Challenge map</h2></div></div>
         <div id="historyGrid" class="history-grid" aria-label="75 day challenge history"></div>
         <div class="legend"><span><i class="dot won"></i>Won</span><span><i class="dot current"></i>Current</span><span><i class="dot partial"></i>Started</span><span><i class="dot future"></i>Future</span></div>
@@ -146,15 +161,16 @@
 
       <section class="data-actions card">
         <div><h3>Your data belongs to you</h3><p>Export a backup or restore one later.</p></div>
-        <div class="quick-row">
-          <button id="exportBtn" class="small-btn">Export backup</button>
-          <label class="small-btn ghost file-label">Import backup<input id="importInput" type="file" accept="application/json" /></label>
-        </div>
+        <div class="quick-row"><button id="exportBtn" class="small-btn">Export backup</button><label class="small-btn ghost file-label">Import backup<input id="importInput" type="file" accept="application/json" /></label></div>
       </section>
     </main>
 
     <footer>HARD75 • Built for consistency, not perfection.</footer>
   </div>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="#top">Today</a><a href="#plan">Meals + Workouts</a><a href="#progress">Progress</a>
+  </nav>
 
   <dialog id="settingsDialog">
     <form method="dialog" class="dialog-card" id="settingsForm">
@@ -168,6 +184,7 @@
     </form>
   </dialog>
 
+  <script src="plans.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
