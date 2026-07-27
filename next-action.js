@@ -4,16 +4,15 @@
   const MAIN_KEY = "hard75-state-v1";
   const COACH_KEY = "hard75-coach-v2";
   const GAP_MS = 3 * 60 * 60 * 1000;
-  const PHOTO_DB = "hard75-photo-db";
-  const PHOTO_STORE = "photos";
+  const COACH_REFRESH_MS = 5000;
 
   let allowPhotoToggle = false;
-  let lastWorkout1 = null;
-  let lastWorkout2 = null;
   let currentPhotoUrl = null;
   let currentPhotoExists = false;
+  let periodicRefresh = null;
 
   const $ = id => document.getElementById(id);
+  const photos = () => window.HARD75_PHOTOS;
 
   function readJSON(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) || fallback; }
@@ -31,15 +30,17 @@
     return `${y}-${m}-${d}`;
   }
 
-  function parseDate(value) {
-    const [y, m, d] = String(value).split("-").map(Number);
-    return new Date(y, m - 1, d);
+  function calendarStamp(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+    if (!match) return NaN;
+    return Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
   }
 
   function currentDayNumber(main) {
     if (!main?.settings?.startDate) return 1;
-    const start = parseDate(main.settings.startDate);
-    const today = parseDate(localISODate(new Date()));
+    const start = calendarStamp(main.settings.startDate);
+    const today = calendarStamp(localISODate(new Date()));
+    if (!Number.isFinite(start) || !Number.isFinite(today)) return 1;
     return Math.min(75, Math.max(1, Math.floor((today - start) / 86400000) + 1));
   }
 
@@ -49,54 +50,19 @@
     const dayNum = currentDayNumber(main);
     const day = main.days?.[String(dayNum)] || {};
     const coach = coachState();
+    if (!coach.days || typeof coach.days !== "object") coach.days = {};
     if (!coach.days[String(dayNum)]) {
-      coach.days[String(dayNum)] = {
-        meals: [false, false, false, false],
-        workout1DoneAt: null,
-        workout2DoneAt: null
-      };
+      coach.days[String(dayNum)] = { meals: [false, false, false, false] };
       saveCoach(coach);
     }
-    return { main, dayNum, day, coach, cday: coach.days[String(dayNum)] };
+    const cday = coach.days[String(dayNum)];
+    if (!Array.isArray(cday.meals)) cday.meals = [false, false, false, false];
+    while (cday.meals.length < 4) cday.meals.push(false);
+    return { main, dayNum, day, coach, cday };
   }
 
   function photoKey(main, dayNum) {
-    return `${main.settings?.startDate || "start"}:day:${dayNum}`;
-  }
-
-  function openPhotoDB() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(PHOTO_DB, 1);
-      request.onupgradeneeded = () => {
-        const db = request.result;
-        if (!db.objectStoreNames.contains(PHOTO_STORE)) db.createObjectStore(PHOTO_STORE);
-      };
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async function savePhoto(key, file) {
-    const db = await openPhotoDB();
-    await new Promise((resolve, reject) => {
-      const tx = db.transaction(PHOTO_STORE, "readwrite");
-      tx.objectStore(PHOTO_STORE).put(file, key);
-      tx.oncomplete = resolve;
-      tx.onerror = () => reject(tx.error);
-    });
-    db.close();
-  }
-
-  async function loadPhoto(key) {
-    const db = await openPhotoDB();
-    const value = await new Promise((resolve, reject) => {
-      const tx = db.transaction(PHOTO_STORE, "readonly");
-      const req = tx.objectStore(PHOTO_STORE).get(key);
-      req.onsuccess = () => resolve(req.result || null);
-      req.onerror = () => reject(req.error);
-    });
-    db.close();
-    return value;
+    return photos()?.key(main.settings?.startDate || "start", dayNum) || `${main.settings?.startDate || "start"}:day:${dayNum}`;
   }
 
   function injectCoach() {
@@ -142,25 +108,31 @@
     const tools = document.createElement("div");
     tools.className = "photo-tools";
     tools.innerHTML = `
-      <button type="button" class="small-btn" id="capturePhotoBtn">Take / add photo</button>
+      <button type="button" class="small-btn" id="capturePhotoBtn">Take / retake photo</button>
       <div id="photoPreviewWrap" class="photo-preview-wrap hidden"><img id="photoPreview" alt="Today's progress photo preview" /></div>
-      <small class="photo-private">Saved only in this browser on this device.</small>
+      <small class="photo-private">Saved in this app on this device and included in exported backups.</small>
     `;
     task.querySelector(".task-copy")?.appendChild(tools);
     $("capturePhotoBtn")?.addEventListener("click", openCamera);
-    refreshPhotoPreview();
+  }
+
+  function releaseCurrentPhotoUrl() {
+    if (currentPhotoUrl) URL.revokeObjectURL(currentPhotoUrl);
+    currentPhotoUrl = null;
   }
 
   async function refreshPhotoPreview() {
     const info = dayInfo();
     if (!info) return;
+    const store = photos();
+    const wrap = $("photoPreviewWrap");
+    const img = $("photoPreview");
+    if (!wrap || !img || !store) return;
+
     try {
-      const blob = await loadPhoto(photoKey(info.main, info.dayNum));
+      const blob = await store.load(photoKey(info.main, info.dayNum));
       currentPhotoExists = !!blob;
-      const wrap = $("photoPreviewWrap");
-      const img = $("photoPreview");
-      if (!wrap || !img) return;
-      if (currentPhotoUrl) URL.revokeObjectURL(currentPhotoUrl);
+      releaseCurrentPhotoUrl();
       if (blob) {
         currentPhotoUrl = URL.createObjectURL(blob);
         img.src = currentPhotoUrl;
@@ -170,12 +142,19 @@
         wrap.classList.add("hidden");
       }
       renderCoach();
-    } catch {
+    } catch (error) {
+      console.error(error);
       currentPhotoExists = false;
+      img.removeAttribute("src");
+      wrap.classList.add("hidden");
     }
   }
 
   function openCamera() {
+    if (!photos()) {
+      alert("Photo storage isn't available in this browser.");
+      return;
+    }
     $("coachCamera")?.click();
   }
 
@@ -183,9 +162,12 @@
     const file = event.target.files?.[0];
     if (!file) return;
     const info = dayInfo();
-    if (!info) return;
+    const store = photos();
+    if (!info || !store) return;
+
     try {
-      await savePhoto(photoKey(info.main, info.dayNum), file);
+      const optimized = await store.optimizeImage(file);
+      await store.save(photoKey(info.main, info.dayNum), optimized);
       currentPhotoExists = true;
       const photoCheck = document.querySelector('[data-check="photo"]');
       if (photoCheck && !info.day.photo) {
@@ -195,10 +177,12 @@
       }
       await refreshPhotoPreview();
       flashCoach();
-    } catch {
+    } catch (error) {
+      console.error(error);
       alert("I couldn't save that photo on this device. Please try another photo.");
+    } finally {
+      event.target.value = "";
     }
-    event.target.value = "";
   }
 
   function decorateMeals() {
@@ -218,13 +202,14 @@
       }
       const done = !!info.cday.meals[index];
       row.classList.toggle("meal-done", done);
+      button.setAttribute("aria-pressed", String(done));
       button.textContent = done ? "EATEN ✓" : "MARK EATEN";
     });
   }
 
   function toggleMeal(index) {
     const info = dayInfo();
-    if (!info) return;
+    if (!info || !Number.isInteger(index) || index < 0 || index > 3) return;
     info.cday.meals[index] = !info.cday.meals[index];
     saveCoach(info.coach);
     decorateMeals();
@@ -237,29 +222,13 @@
 
     document.addEventListener("click", event => {
       const photoCheck = event.target.closest('[data-check="photo"]');
-      if (photoCheck && !allowPhotoToggle) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        openCamera();
-      }
+      if (!photoCheck || allowPhotoToggle) return;
+      const info = dayInfo();
+      if (info?.day.photo) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openCamera();
     }, true);
-  }
-
-  function trackWorkoutTimes() {
-    const info = dayInfo();
-    if (!info) return;
-
-    const w1 = !!info.day.workout1;
-    const w2 = !!info.day.workout2;
-
-    if (lastWorkout1 === false && w1 && !info.cday.workout1DoneAt) info.cday.workout1DoneAt = Date.now();
-    if (lastWorkout2 === false && w2 && !info.cday.workout2DoneAt) info.cday.workout2DoneAt = Date.now();
-    if (!w1) info.cday.workout1DoneAt = null;
-    if (!w2) info.cday.workout2DoneAt = null;
-
-    lastWorkout1 = w1;
-    lastWorkout2 = w2;
-    saveCoach(info.coach);
   }
 
   function firstDueMeal(info) {
@@ -271,13 +240,8 @@
     return -1;
   }
 
-  function allMealsDone(info) {
-    return info.cday.meals.every(Boolean);
-  }
-
-  function timerRunning(id) {
-    const value = $(id)?.textContent?.trim();
-    return !!value && value !== "45:00" && value !== "00:00";
+  function timerRunning(day, which) {
+    return !!day?.timers?.[which]?.running && !day?.[which];
   }
 
   function formatGap(ms) {
@@ -288,7 +252,7 @@
   }
 
   function actionFor(info) {
-    const { main, dayNum, day, cday } = info;
+    const { main, dayNum, day } = info;
     const goal = Number(main.settings?.waterGoal || 128);
     const idx = (dayNum - 1) % 7;
     const mealPlan = window.HARD75_PLANS?.meals?.[idx];
@@ -297,24 +261,24 @@
 
     if (day.won) return {
       type: "done", icon: "✓", label: "DAY WON", title: "You handled today.",
-      copy: "Keep your word through bedtime. Tomorrow we do it again.",
-      button: "TODAY IS COMPLETE ✓", buttonClass: "success",
+      copy: "Keep your word through bedtime. Tap below to see today's record in your challenge map.",
+      button: "VIEW TODAY IN CHALLENGE MAP →", buttonClass: "success",
       chips: [`Day ${dayNum} of 75`, "All requirements complete"]
     };
 
     if (!day.photo) return {
       type: "photo", icon: "📸", label: "DON'T FORGET THIS", title: "Take your progress photo.",
-      copy: currentPhotoExists ? "A photo is saved. Tap below to confirm it for today." : "Tap once, use your camera, and the photo stays inside this browser on your device.",
+      copy: currentPhotoExists ? "A photo is saved. Tap below to confirm it for today." : "Tap once, use your camera, and the photo stays inside this app on your device.",
       button: currentPhotoExists ? "CONFIRM TODAY'S PHOTO →" : "OPEN CAMERA →",
-      chips: ["Saved in app", "About 30 seconds"]
+      chips: ["Saved in app", "Included in backup"]
     };
 
     if (dueMeal === 0) return mealAction(mealPlan, 0);
 
     if (!day.workout1) {
-      if (timerRunning("timer1")) return {
+      if (timerRunning(day, "workout1")) return {
         type: "workout1", icon: "⏱", label: "WORKOUT #1 RUNNING", title: `${$("timer1")?.textContent || ""} remaining`,
-        copy: "Keep moving until the 45 minutes are complete.", button: "PAUSE / RESUME TIMER",
+        copy: "Keep moving until the 45 minutes are complete. The timer stays accurate if your phone sleeps.", button: "PAUSE / RESUME TIMER",
         chips: [String(day.gymLevel || "floor").toUpperCase(), workout?.gymTitle || "Main workout"]
       };
       return {
@@ -336,7 +300,7 @@
     if (dueMeal >= 1) return mealAction(mealPlan, dueMeal);
 
     if (!day.workout2) {
-      const doneAt = Number(cday.workout1DoneAt || 0);
+      const doneAt = Number(day.workout1DoneAt || 0);
       const gapLeft = doneAt ? doneAt + GAP_MS - Date.now() : 0;
       if (gapLeft > 0) {
         if (Number(day.water || 0) < goal) {
@@ -352,7 +316,7 @@
           button: "SHOW OUTDOOR PLAN →", buttonClass: "waiting", chips: ["Workout #1 done", "Stay on plan"]
         };
       }
-      if (timerRunning("timer2")) return {
+      if (timerRunning(day, "workout2")) return {
         type: "workout2", icon: "⏱", label: "OUTDOOR WORKOUT RUNNING", title: `${$("timer2")?.textContent || ""} remaining`,
         copy: "Stay outside and finish the continuous 45 minutes.", button: "PAUSE / RESUME TIMER",
         chips: [String(day.outdoorLevel || "floor").toUpperCase(), workout?.outdoorTitle || "Outdoor workout"]
@@ -435,7 +399,6 @@
     injectCoach();
     decoratePhotoTask();
     decorateMeals();
-    trackWorkoutTimes();
 
     const info = dayInfo();
     if (!info || !$("rightNowCard")) return;
@@ -490,11 +453,14 @@
       document.querySelector('[data-check="diet"]')?.click();
     } else if (action.type === "complete") {
       $("completeDayBtn")?.click();
-    } else if (action.type === "plan") {
+    } else if (action.type === "done") {
+      $("progress")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => document.querySelector("#historyGrid .day-dot.current")?.click(), 180);
+    } else {
       $("today")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    setTimeout(() => { renderCoach(); flashCoach(); }, 150);
+    setTimeout(() => { renderCoach(); flashCoach(); }, 120);
   }
 
   function flashCoach() {
@@ -506,49 +472,58 @@
   }
 
   function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    return String(value).replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
   }
 
   document.addEventListener("click", event => {
     const water = event.target.closest("[data-coach-water]");
     if (water) {
       document.querySelector(`[data-water="${water.dataset.coachWater}"]`)?.click();
-      setTimeout(renderCoach, 100);
       return;
     }
+
     const pages = event.target.closest("[data-coach-pages]");
     if (pages) {
       document.querySelector(`[data-pages="${pages.dataset.coachPages}"]`)?.click();
-      setTimeout(renderCoach, 100);
       return;
     }
+
     const level = event.target.closest("[data-coach-level]");
     if (level) {
       const [kind, value] = level.dataset.coachLevel.split(":");
       document.querySelector(`[data-level-kind="${kind}"][data-level="${value}"]`)?.click();
-      setTimeout(renderCoach, 100);
       return;
     }
+
     const view = event.target.closest("[data-coach-view]");
     if (view) {
-      const target = view.dataset.coachView === "workout1" ? $("workoutPlanCard") : document.querySelector(".outdoor-plan");
+      const target = view.dataset.coachView === "workout1" ? $("workouts") : document.querySelector(".outdoor-plan");
       target?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   });
+
+  function handleStateChange(event) {
+    renderCoach();
+    const reason = event?.detail?.reason || "";
+    if (["reset-day", "restart", "import", "settings"].includes(reason)) refreshPhotoPreview();
+  }
 
   function start() {
     injectCoach();
     observeMainApp();
     decoratePhotoTask();
     decorateMeals();
-    const info = dayInfo();
-    lastWorkout1 = !!info?.day.workout1;
-    lastWorkout2 = !!info?.day.workout2;
     refreshPhotoPreview();
     renderCoach();
-    setInterval(renderCoach, 1000);
+    window.addEventListener("hard75:state-change", handleStateChange);
+    periodicRefresh = setInterval(renderCoach, COACH_REFRESH_MS);
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  window.addEventListener("pagehide", () => {
+    if (periodicRefresh) clearInterval(periodicRefresh);
+    releaseCurrentPhotoUrl();
+  });
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 })();
