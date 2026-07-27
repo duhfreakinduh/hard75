@@ -1,19 +1,19 @@
 window.HARD75_PLANS = {
   floorRules: {
     gym: {
-      title: "FLOOR • Keep the streak alive",
-      note: "45 continuous minutes. Intentional workout pace. Simple enough for a rough day.",
+      title: "FLOOR • Simple and legitimate",
+      note: "45 continuous minutes at an intentional workout pace. No complicated plan required.",
       steps: [
-        ["0–5 min", "Easy treadmill warm-up"],
-        ["5–40 min", "Comfortable purposeful treadmill walk"],
+        ["0–5 min", "Easy walk to warm up"],
+        ["5–40 min", "Purposeful continuous walk — treadmill, track, or neighborhood"],
         ["40–45 min", "Easy cool-down walk"]
       ]
     },
     outdoor: {
       title: "FLOOR • Outdoor walk",
-      note: "45 continuous minutes outside. Walk with family or pets if that helps you get it done.",
+      note: "45 continuous minutes outside. Family and dog walks work when you treat the walk as the workout.",
       steps: [
-        ["0–5 min", "Easy outdoor walk"],
+        ["0–5 min", "Easy outdoor warm-up walk"],
         ["5–40 min", "Purposeful continuous walk at a sustainable pace"],
         ["40–45 min", "Easy walk home / cool down"]
       ]
@@ -41,7 +41,7 @@ window.HARD75_PLANS = {
         ["Snack", "Greek yogurt + clementine, or 2 eggs"],
         ["Dinner", "8 oz sirloin steak + large salad + roasted vegetables"]
       ],
-      prep: "Grill extra chicken for Day 3. Make 2–3 cups cooked rice. Keep fruit washed and visible so the easy choice stays easy."
+      prep: "Grill extra chicken for tomorrow. Make 2–3 cups cooked rice. Keep fruit washed and visible so the easy choice stays easy."
     },
     {
       title: "Ground beef bowl day",
@@ -102,136 +102,141 @@ window.HARD75_PLANS = {
 
   workouts: [
     {
-      gymTitle: "Push + core",
-      focus: "Chest • shoulders • triceps • core",
+      gymTitle: "Full Body Foundation",
+      focus: "Original circuit • full body • low equipment",
       ceiling: [
-        ["Warm-up", "5 min treadmill + shoulder circles"],
-        ["Chest press machine", "3 × 10–12"],
-        ["Incline chest press", "3 × 10–12"],
-        ["Shoulder press machine", "3 × 8–10, comfortable range"],
-        ["Triceps pressdown", "3 × 12–15, pain-free"],
-        ["Pec deck", "2 × 12–15"],
-        ["Core", "3 rounds: 10 dead bugs/side + 30-sec plank"],
-        ["Finish", "Walk until total workout time reaches 45:00"]
+        ["0–5 min", "Warm-up: walk + arm circles + easy squats"],
+        ["Circuit • 5 rounds", "40 sec bodyweight squats • 20 sec transition"],
+        ["", "40 sec incline push-ups or wall push-ups • 20 sec transition"],
+        ["", "40 sec standing knee drives • 20 sec transition"],
+        ["", "40 sec reverse lunges or sit-to-stands • 20 sec transition"],
+        ["", "40 sec shadow boxing • 20 sec transition"],
+        ["30–35 min", "Core: alternate dead bugs and bird dogs"],
+        ["35–45 min", "Brisk walk finisher"]
       ],
-      outdoorTitle: "Brisk family / dog walk",
+      outdoorTitle: "Brisk Walk Intervals",
       outdoorCeiling: [
         ["0–5 min", "Easy warm-up walk"],
-        ["5–35 min", "Brisk walk; talking is possible but breathing is elevated"],
-        ["35–40 min", "5 × 30-sec fast walk / 30-sec easy"],
-        ["40–45 min", "Easy walk + cool down"]
-      ]
-    },
-    {
-      gymTitle: "Legs",
-      focus: "Quads • hamstrings • glutes • calves",
-      ceiling: [
-        ["Warm-up", "5 min treadmill"],
-        ["Leg press", "4 × 10–12"],
-        ["Seated leg curl", "3 × 12"],
-        ["Leg extension", "3 × 12"],
-        ["Smith squat to bench", "3 × 8–10"],
-        ["Calf raise", "3 × 15"],
-        ["Core", "3 × 12 controlled crunches"],
-        ["Finish", "Easy walk until total time reaches 45:00"]
-      ],
-      outdoorTitle: "Walk + intervals",
-      outdoorCeiling: [
-        ["0–10 min", "Easy-to-brisk walk"],
-        ["10–30 min", "10 rounds: 1 min faster / 1 min easy"],
-        ["30–40 min", "Steady brisk walk"],
+        ["5–35 min", "10 rounds: 2 min brisk + 1 min easy"],
+        ["35–40 min", "5 × 30 sec fast walk / 30 sec easy"],
         ["40–45 min", "Easy cool-down"]
       ]
     },
     {
-      gymTitle: "Pull + core",
-      focus: "Back • rear shoulders • biceps • core",
+      gymTitle: "Legs + Engine",
+      focus: "Original circuit • lower body • cardio",
       ceiling: [
-        ["Warm-up", "5 min treadmill + gentle arm movement"],
-        ["Lat pulldown", "3 × 10–12"],
-        ["Seated cable row", "3 × 10–12"],
-        ["Rear-delt fly", "3 × 12–15"],
-        ["Machine row", "3 × 10–12"],
-        ["Cable curl", "2 × 12, pain-free"],
-        ["Core", "3 rounds: Pallof press 10/side + 30-sec plank"],
-        ["Finish", "Walk until total time reaches 45:00"]
+        ["0–5 min", "Warm-up: easy walk + hip circles"],
+        ["Circuit • 5 rounds", "40 sec squats • 20 sec transition"],
+        ["", "40 sec alternating step-back lunges • 20 sec transition"],
+        ["", "40 sec calf raises • 20 sec transition"],
+        ["", "40 sec step jacks • 20 sec transition"],
+        ["", "40 sec high-knee march • 20 sec transition"],
+        ["30–35 min", "Glute bridges + easy mobility"],
+        ["35–45 min", "Brisk treadmill or track walk"]
       ],
-      outdoorTitle: "Steady outdoor walk",
+      outdoorTitle: "Hill / Speed Walk",
       outdoorCeiling: [
-        ["0–5 min", "Easy walk"],
-        ["5–40 min", "Steady purposeful walk with family or pets"],
+        ["0–10 min", "Steady warm-up walk"],
+        ["10–30 min", "Choose a hill or brisk pace: 1 min hard / 1 min easy"],
+        ["30–40 min", "Steady purposeful walk"],
         ["40–45 min", "Cool down"]
       ]
     },
     {
-      gymTitle: "Recovery + mobility",
-      focus: "Keep moving • reduce soreness • protect joints",
+      gymTitle: "Core + Cardio",
+      focus: "Original circuit • trunk • conditioning",
       ceiling: [
-        ["Treadmill", "20 min comfortable pace"],
-        ["Bike", "10 min easy"],
-        ["Mobility", "10 min hips, ankles, upper back, shoulders"],
-        ["Core", "5 min dead bugs, bird dogs, breathing"]
+        ["0–5 min", "Warm-up walk + torso rotations"],
+        ["Circuit • 5 rounds", "40 sec standing cross-crunches • 20 sec transition"],
+        ["", "40 sec fast march • 20 sec transition"],
+        ["", "40 sec dead bugs • 20 sec transition"],
+        ["", "40 sec squat-to-reach • 20 sec transition"],
+        ["", "40 sec bird dogs • 20 sec transition"],
+        ["30–35 min", "Easy core mobility and breathing"],
+        ["35–45 min", "Brisk walk finisher"]
       ],
-      outdoorTitle: "Recovery walk",
+      outdoorTitle: "Steady Family / Dog Walk",
       outdoorCeiling: [
-        ["0–45 min", "Comfortable continuous outdoor walk"],
-        ["Focus", "Use it for prayer, scripture reflection, or family conversation"]
+        ["0–5 min", "Easy walk"],
+        ["5–40 min", "Steady purposeful pace with family or pets"],
+        ["40–45 min", "Cool down"]
       ]
     },
     {
-      gymTitle: "Upper body mix",
-      focus: "Chest • back • shoulders • arms",
+      gymTitle: "Recovery Flow",
+      focus: "Active recovery • mobility • easy cardio",
       ceiling: [
-        ["Warm-up", "5 min treadmill"],
-        ["Chest press", "3 × 10"],
-        ["Lat pulldown", "3 × 10"],
-        ["Seated row", "3 × 10"],
-        ["Lateral raise machine", "3 × 12"],
-        ["Pec deck / rear-delt fly", "2 × 12 each"],
-        ["Triceps pressdown", "2 × 12, pain-free"],
-        ["Finish", "Easy cardio until total time reaches 45:00"]
+        ["0–15 min", "Comfortable walk"],
+        ["15–20 min", "Hip hinges + calf raises at an easy pace"],
+        ["20–25 min", "Wall slides + gentle torso rotations"],
+        ["25–30 min", "Sit-to-stands + marching"],
+        ["30–35 min", "Bird dogs + dead bugs"],
+        ["35–45 min", "Easy walk and breathing"]
       ],
-      outdoorTitle: "Progressive walk",
+      outdoorTitle: "Recovery Prayer Walk",
       outdoorCeiling: [
-        ["0–15 min", "Easy-to-moderate walk"],
-        ["15–35 min", "Brisk walk"],
+        ["0–45 min", "Continuous comfortable outdoor walk"],
+        ["Focus", "Prayer, scripture reflection, family conversation, or quiet recovery"]
+      ]
+    },
+    {
+      gymTitle: "Strength Endurance",
+      focus: "Original circuit • strength • repeatable",
+      ceiling: [
+        ["0–5 min", "Warm-up walk + mobility"],
+        ["Circuit • 5 rounds", "40 sec sit-to-stands or squats • 20 sec transition"],
+        ["", "40 sec incline push-ups • 20 sec transition"],
+        ["", "40 sec good mornings • 20 sec transition"],
+        ["", "40 sec alternating knee drives • 20 sec transition"],
+        ["", "40 sec glute bridges • 20 sec transition"],
+        ["30–35 min", "Core: dead bugs + bird dogs"],
+        ["35–45 min", "Brisk walk finisher"]
+      ],
+      outdoorTitle: "Progressive Walk",
+      outdoorCeiling: [
+        ["0–15 min", "Easy-to-moderate pace"],
+        ["15–35 min", "Brisk pace"],
         ["35–40 min", "Fastest sustainable walk"],
         ["40–45 min", "Cool down"]
       ]
     },
     {
-      gymTitle: "Lower body + conditioning",
-      focus: "Legs • glutes • conditioning",
+      gymTitle: "Cardio Circuit",
+      focus: "Original circuit • low impact • high movement",
       ceiling: [
-        ["Warm-up", "5 min treadmill"],
-        ["Leg press", "3 × 12"],
-        ["Seated leg curl", "3 × 12"],
-        ["Goblet or Smith squat", "3 × 10"],
-        ["Step-ups", "3 × 8/leg"],
-        ["Calf raise", "3 × 15"],
-        ["Treadmill", "10 min brisk walk"],
-        ["Finish", "Easy pace until total time reaches 45:00"]
+        ["0–5 min", "Warm-up walk"],
+        ["Circuit • 5 rounds", "40 sec step jacks • 20 sec transition"],
+        ["", "40 sec shadow boxing • 20 sec transition"],
+        ["", "40 sec squat-to-reach • 20 sec transition"],
+        ["", "40 sec fast march • 20 sec transition"],
+        ["", "40 sec alternating reverse lunges • 20 sec transition"],
+        ["30–35 min", "Easy walk while heart rate settles"],
+        ["35–45 min", "Brisk walk finisher"]
       ],
-      outdoorTitle: "Family adventure walk",
+      outdoorTitle: "Family Adventure Walk",
       outdoorCeiling: [
-        ["0–45 min", "Park, neighborhood, or trail walk. Keep moving continuously."],
-        ["Goal", "Make this the fun workout of the week"]
+        ["0–45 min", "Park, neighborhood, or trail. Keep moving continuously."],
+        ["Goal", "Make this the fun outdoor workout of the week"]
       ]
     },
     {
-      gymTitle: "Full-body circuit",
-      focus: "Whole body • controlled effort",
+      gymTitle: "Full Body Reset",
+      focus: "Original circuit • total body • controlled effort",
       ceiling: [
-        ["Warm-up", "5 min treadmill"],
-        ["Circuit × 3", "10 leg press • 10 chest press • 10 pulldown • 10 seated row • 12 leg curls"],
-        ["Between rounds", "2 min easy treadmill"],
-        ["Core", "5 min bird dogs + dead bugs"],
-        ["Finish", "Comfortable treadmill until total time reaches 45:00"]
+        ["0–5 min", "Warm-up walk + mobility"],
+        ["Circuit • 5 rounds", "40 sec squats • 20 sec transition"],
+        ["", "40 sec wall or incline push-ups • 20 sec transition"],
+        ["", "40 sec standing cross-crunches • 20 sec transition"],
+        ["", "40 sec hip hinges • 20 sec transition"],
+        ["", "40 sec shadow boxing • 20 sec transition"],
+        ["30–35 min", "Bird dogs + dead bugs"],
+        ["35–45 min", "Comfortable walk to finish"]
       ],
-      outdoorTitle: "Sunday prayer walk",
+      outdoorTitle: "Sunday Prayer Walk",
       outdoorCeiling: [
         ["0–45 min", "Purposeful outdoor family/pet walk or solo prayer walk"],
-        ["Focus", "Review the week, thank God for wins, choose tomorrow's focus"]
+        ["Focus", "Review the week, thank God for wins, and choose tomorrow's focus"]
       ]
     }
   ],
