@@ -1,38 +1,51 @@
 .jump-target { scroll-margin-top: 16px; }
 
-.jump-nav {
+/* Compact fixed navigation: all six destinations stay visible without dominating the screen. */
+.app-shell { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+
+.bottom-nav.jump-nav {
   display: flex;
   grid-template-columns: none;
-  gap: 5px;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-  justify-content: flex-start;
-  padding: 6px;
+  justify-content: center;
+  gap: 2px;
+  overflow-x: hidden;
+  bottom: max(5px, env(safe-area-inset-bottom));
+  width: min(430px, calc(100% - 14px));
+  padding: 3px;
+  border-radius: 12px;
 }
-
-.jump-nav::-webkit-scrollbar { display: none; }
 
 .jump-nav a {
-  flex: 0 0 auto;
-  min-width: 72px;
-  padding: 10px 9px;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 5px 2px;
   background: transparent;
-  border-radius: 10px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  text-decoration: none;
+  text-align: center;
   white-space: nowrap;
+  font-size: .58rem;
+  font-weight: 850;
 }
 
-.jump-nav a:nth-child(2) { background: transparent; }
 .jump-nav a:active,
 .jump-nav a:focus-visible {
   background: #24324a;
   color: #fff;
+  outline: none;
+}
+
+.jump-nav::-webkit-scrollbar { display: none; }
+
+@media (max-width: 390px) {
+  .jump-nav a { font-size: .54rem; padding-inline: 1px; }
 }
 
 @media (min-width: 640px) {
-  .jump-nav {
-    justify-content: center;
-    width: min(660px, calc(100% - 24px));
-  }
-  .jump-nav a { min-width: 88px; }
+  .bottom-nav.jump-nav { width: min(520px, calc(100% - 24px)); }
+  .jump-nav a { font-size: .63rem; }
 }
