@@ -9,9 +9,10 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="next-action.css" />
+  <link rel="stylesheet" href="pages.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" id="mainAppShell">
     <header class="topbar" id="top">
       <div>
         <p class="eyebrow">GOD 1ST • FAMILY 2ND • EVERYTHING ELSE 3RD</p>
@@ -46,19 +47,20 @@
       </section>
 
       <section class="section-heading" id="plan">
-        <div><p class="eyebrow">NO GUESSING</p><h2>Today's game plan</h2></div>
+        <div><p class="eyebrow">TODAY ONLY</p><h2>Today's plan</h2></div>
+        <a class="text-link" href="#meals">Plan ahead</a>
       </section>
 
       <section class="plan-stack">
         <article class="plan-card meal-plan" id="mealPlanCard">
           <div class="plan-head">
-            <div><span class="plan-icon">🍽</span><div><p class="eyebrow">MEALS</p><h2 id="mealPlanTitle">Simple high-protein day</h2></div></div>
+            <div><span class="plan-icon">🍽</span><div><p class="eyebrow">TODAY'S MEALS</p><h2 id="mealPlanTitle">Simple high-protein day</h2></div></div>
             <span class="plan-badge">DAY <b id="mealPlanDay">1</b></span>
           </div>
           <p class="plan-note" id="mealPlanNote">Protein first. Simple foods. Repeatable portions.</p>
           <div id="mealPlanList" class="plan-list"></div>
           <details class="prep-details">
-            <summary>Prep + grocery shortcut</summary>
+            <summary>Today's prep shortcut</summary>
             <div id="mealPrepText" class="detail-body"></div>
           </details>
         </article>
@@ -169,8 +171,14 @@
     <footer>HARD75 • Built for consistency, not perfection.</footer>
   </div>
 
-  <nav class="bottom-nav" aria-label="Main navigation">
-    <a href="#top">Today</a><a href="#plan">Meals + Workouts</a><a href="#progress">Progress</a>
+  <section id="plannerPage" class="app-page hidden" aria-live="polite"></section>
+  <section id="stepPage" class="app-page step-page hidden" aria-live="polite"></section>
+
+  <nav class="bottom-nav app-bottom-nav" aria-label="Main navigation">
+    <a href="#today-page" data-page-nav="today">Today</a>
+    <a href="#meals" data-page-nav="meals">Meals</a>
+    <a href="#workouts" data-page-nav="workouts">Workouts</a>
+    <a href="#progress-page" data-page-nav="progress">Progress</a>
   </nav>
 
   <dialog id="settingsDialog">
@@ -188,5 +196,6 @@
   <script src="plans.js" defer></script>
   <script src="app.js" defer></script>
   <script src="next-action.js" defer></script>
+  <script src="pages.js" defer></script>
 </body>
 </html>
