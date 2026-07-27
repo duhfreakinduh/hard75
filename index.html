@@ -9,10 +9,10 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="next-action.css" />
-  <link rel="stylesheet" href="pages.css" />
+  <link rel="stylesheet" href="jump-nav.css" />
 </head>
 <body>
-  <div class="app-shell" id="mainAppShell">
+  <div class="app-shell">
     <header class="topbar" id="top">
       <div>
         <p class="eyebrow">GOD 1ST • FAMILY 2ND • EVERYTHING ELSE 3RD</p>
@@ -47,12 +47,11 @@
       </section>
 
       <section class="section-heading" id="plan">
-        <div><p class="eyebrow">TODAY ONLY</p><h2>Today's plan</h2></div>
-        <a class="text-link" href="#meals">Plan ahead</a>
+        <div><p class="eyebrow">NO GUESSING</p><h2>Today's game plan</h2></div>
       </section>
 
       <section class="plan-stack">
-        <article class="plan-card meal-plan" id="mealPlanCard">
+        <article class="plan-card meal-plan jump-target" id="meals">
           <div class="plan-head">
             <div><span class="plan-icon">🍽</span><div><p class="eyebrow">TODAY'S MEALS</p><h2 id="mealPlanTitle">Simple high-protein day</h2></div></div>
             <span class="plan-badge">DAY <b id="mealPlanDay">1</b></span>
@@ -60,12 +59,12 @@
           <p class="plan-note" id="mealPlanNote">Protein first. Simple foods. Repeatable portions.</p>
           <div id="mealPlanList" class="plan-list"></div>
           <details class="prep-details">
-            <summary>Today's prep shortcut</summary>
+            <summary>Prep + grocery shortcut</summary>
             <div id="mealPrepText" class="detail-body"></div>
           </details>
         </article>
 
-        <article class="plan-card workout-plan" id="workoutPlanCard">
+        <article class="plan-card workout-plan jump-target" id="workouts">
           <div class="plan-head">
             <div><span class="plan-icon">🏋</span><div><p class="eyebrow">WORKOUT #1 • 45 MIN</p><h2 id="gymPlanTitle">Workout</h2></div></div>
             <span class="plan-badge">MAIN</span>
@@ -90,7 +89,7 @@
         </article>
       </section>
 
-      <section class="section-heading" id="today">
+      <section class="section-heading jump-target" id="today">
         <div><p class="eyebrow">TAP IT • DONE</p><h2>Daily checklist</h2></div>
         <button id="resetTodayBtn" class="text-btn">Reset today</button>
       </section>
@@ -141,7 +140,7 @@
         </article>
       </section>
 
-      <section class="faith card">
+      <section class="faith card jump-target" id="faith">
         <div class="faith-top">
           <div><p class="eyebrow">FAITH • BONUS HABIT</p><h2 id="verseRef">1 Corinthians 9:27</h2></div>
           <button id="faithCheck" class="faith-check">Prayer + Scripture ○</button>
@@ -156,7 +155,7 @@
 
       <button id="completeDayBtn" class="complete-btn" disabled>Finish all requirements to win today</button>
 
-      <section class="history-section" id="progress">
+      <section class="history-section jump-target" id="progress">
         <div class="section-heading"><div><p class="eyebrow">THE 75</p><h2>Challenge map</h2></div></div>
         <div id="historyGrid" class="history-grid" aria-label="75 day challenge history"></div>
         <div class="legend"><span><i class="dot won"></i>Won</span><span><i class="dot current"></i>Current</span><span><i class="dot partial"></i>Started</span><span><i class="dot future"></i>Future</span></div>
@@ -171,14 +170,13 @@
     <footer>HARD75 • Built for consistency, not perfection.</footer>
   </div>
 
-  <section id="plannerPage" class="app-page hidden" aria-live="polite"></section>
-  <section id="stepPage" class="app-page step-page hidden" aria-live="polite"></section>
-
-  <nav class="bottom-nav app-bottom-nav" aria-label="Main navigation">
-    <a href="#today-page" data-page-nav="today">Today</a>
-    <a href="#meals" data-page-nav="meals">Meals</a>
-    <a href="#workouts" data-page-nav="workouts">Workouts</a>
-    <a href="#progress-page" data-page-nav="progress">Progress</a>
+  <nav class="bottom-nav jump-nav" aria-label="Jump to section">
+    <a href="#top">Today</a>
+    <a href="#meals">Meals</a>
+    <a href="#workouts">Workouts</a>
+    <a href="#today">Checklist</a>
+    <a href="#faith">Faith</a>
+    <a href="#progress">Progress</a>
   </nav>
 
   <dialog id="settingsDialog">
@@ -196,6 +194,5 @@
   <script src="plans.js" defer></script>
   <script src="app.js" defer></script>
   <script src="next-action.js" defer></script>
-  <script src="pages.js" defer></script>
 </body>
 </html>
