@@ -8,6 +8,8 @@
   <title>HARD75</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="next-action.css" />
+  <link rel="stylesheet" href="exercise-refs.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -64,8 +66,8 @@
 
         <article class="plan-card workout-plan" id="workoutPlanCard">
           <div class="plan-head">
-            <div><span class="plan-icon">🏋</span><div><p class="eyebrow">WORKOUT #1 • 45 MIN</p><h2 id="gymPlanTitle">Planet Fitness</h2></div></div>
-            <span class="plan-badge">GYM</span>
+            <div><span class="plan-icon">🏋</span><div><p class="eyebrow">WORKOUT #1 • 45 MIN</p><h2 id="gymPlanTitle">Workout</h2></div></div>
+            <span class="plan-badge">MAIN</span>
           </div>
           <div id="gymPlanList" class="exercise-list"></div>
           <div class="plan-action-row">
@@ -133,8 +135,8 @@
         </article>
 
         <article class="task-card" data-task="photo">
-          <button class="check-btn" data-check="photo" aria-label="Toggle progress photo">✓</button>
-          <div class="task-copy"><h3>Progress photo</h3><p>Take today's photo. The app stores the checkoff, not the image.</p></div>
+          <button class="check-btn" data-check="photo" aria-label="Take or add progress photo">✓</button>
+          <div class="task-copy"><h3>Progress photo</h3><p>Take today's photo and keep it stored locally on this device.</p></div>
         </article>
       </section>
 
@@ -186,5 +188,8 @@
 
   <script src="plans.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="exercise-refs.js" defer></script>
+  <script src="exercise-refs-inject.js" defer></script>
+  <script src="next-action.js" defer></script>
 </body>
 </html>
