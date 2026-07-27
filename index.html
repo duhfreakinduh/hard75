@@ -19,7 +19,7 @@
         <p class="eyebrow">GOD 1ST • FAMILY 2ND • EVERYTHING ELSE 3RD</p>
         <h1>HARD<span>75</span></h1>
       </div>
-      <button id="settingsBtn" class="icon-btn" aria-label="Open settings">⚙</button>
+      <button id="settingsBtn" class="icon-btn" type="button" aria-label="Open settings">⚙</button>
     </header>
 
     <main>
@@ -37,7 +37,7 @@
       <section id="warningCard" class="warning card hidden" role="alert">
         <strong>Restart required</strong>
         <p>A previous challenge day is incomplete. In strict mode, a missed requirement means returning to Day 1.</p>
-        <button id="restartFromWarning" class="danger-btn">Restart challenge</button>
+        <button id="restartFromWarning" class="danger-btn" type="button">Restart challenge</button>
       </section>
 
       <section class="stats-grid">
@@ -72,7 +72,7 @@
           </div>
           <div id="gymPlanList" class="exercise-list"></div>
           <div class="plan-action-row">
-            <button class="small-btn" data-jump="workout1">Go to timer</button>
+            <button class="small-btn" type="button" data-jump="workout1">Go to timer</button>
             <span id="gymFocus" class="muted small-copy"></span>
           </div>
         </article>
@@ -84,7 +84,7 @@
           </div>
           <div id="outdoorPlanList" class="exercise-list"></div>
           <div class="plan-action-row">
-            <button class="small-btn" data-jump="workout2">Go to timer</button>
+            <button class="small-btn" type="button" data-jump="workout2">Go to timer</button>
             <span class="muted small-copy">Keep it sustainable. The goal is to finish.</span>
           </div>
         </article>
@@ -92,28 +92,28 @@
 
       <section class="section-heading jump-target" id="today">
         <div><p class="eyebrow">TAP IT • DONE</p><h2>Daily checklist</h2></div>
-        <button id="resetTodayBtn" class="text-btn">Reset today</button>
+        <button id="resetTodayBtn" class="text-btn" type="button">Reset today</button>
       </section>
 
       <section class="tasks" id="tasks">
         <article class="task-card" data-task="diet">
-          <button class="check-btn" data-check="diet" aria-label="Toggle diet requirement">✓</button>
+          <button class="check-btn" type="button" data-check="diet" aria-label="Toggle diet requirement">✓</button>
           <div class="task-copy"><h3>Follow the meal plan</h3><p>No cheat meals. No alcohol. Keep it simple.</p></div>
         </article>
 
         <article class="task-card" data-task="workout1" id="workout1Task">
-          <button class="check-btn" data-check="workout1" aria-label="Toggle first workout">✓</button>
+          <button class="check-btn" type="button" data-check="workout1" aria-label="Toggle first workout">✓</button>
           <div class="task-copy grow">
             <h3>Workout #1</h3><p>45 minutes from today's plan.</p>
-            <div class="timer-row"><span id="timer1">45:00</span><button class="small-btn" data-timer="workout1">Start timer</button><button class="small-btn ghost" data-timer-reset="workout1">Reset</button></div>
+            <div class="timer-row"><span id="timer1">45:00</span><button class="small-btn" type="button" data-timer="workout1">Start timer</button><button class="small-btn ghost" type="button" data-timer-reset="workout1">Reset</button></div>
           </div>
         </article>
 
         <article class="task-card" data-task="workout2" id="workout2Task">
-          <button class="check-btn" data-check="workout2" aria-label="Toggle outdoor workout">✓</button>
+          <button class="check-btn" type="button" data-check="workout2" aria-label="Toggle outdoor workout">✓</button>
           <div class="task-copy grow">
             <h3>Workout #2 • Outdoors</h3><p>45 minutes outside. Family and pet walks fit perfectly.</p>
-            <div class="timer-row"><span id="timer2">45:00</span><button class="small-btn" data-timer="workout2">Start timer</button><button class="small-btn ghost" data-timer-reset="workout2">Reset</button></div>
+            <div class="timer-row"><span id="timer2">45:00</span><button class="small-btn" type="button" data-timer="workout2">Start timer</button><button class="small-btn ghost" type="button" data-timer-reset="workout2">Reset</button></div>
           </div>
         </article>
 
@@ -122,7 +122,7 @@
           <div class="task-copy grow">
             <div class="task-title-row"><h3>Water</h3><strong id="waterReadout">0 / 128 oz</strong></div>
             <div class="meter"><span id="waterMeter"></span></div>
-            <div class="quick-row"><button class="small-btn" data-water="16">+16 oz</button><button class="small-btn" data-water="20">+20 oz</button><button class="small-btn" data-water="32">+32 oz</button><button class="small-btn ghost" data-water="-16">−16</button></div>
+            <div class="quick-row"><button class="small-btn" type="button" data-water="16">+16 oz</button><button class="small-btn" type="button" data-water="20">+20 oz</button><button class="small-btn" type="button" data-water="32">+32 oz</button><button class="small-btn ghost" type="button" data-water="-16">−16</button></div>
           </div>
         </article>
 
@@ -131,12 +131,12 @@
           <div class="task-copy grow">
             <div class="task-title-row"><h3>Read 10 pages</h3><strong id="pagesReadout">0 / 10</strong></div>
             <p>Nonfiction / personal-development reading for the challenge.</p>
-            <div class="quick-row"><button class="small-btn" data-pages="1">+1 page</button><button class="small-btn" data-pages="5">+5 pages</button><button class="small-btn ghost" data-pages="-1">−1</button></div>
+            <div class="quick-row"><button class="small-btn" type="button" data-pages="1">+1 page</button><button class="small-btn" type="button" data-pages="5">+5 pages</button><button class="small-btn ghost" type="button" data-pages="-1">−1</button></div>
           </div>
         </article>
 
         <article class="task-card" data-task="photo">
-          <button class="check-btn" data-check="photo" aria-label="Take or add progress photo">✓</button>
+          <button class="check-btn" type="button" data-check="photo" aria-label="Take or add progress photo">✓</button>
           <div class="task-copy"><h3>Progress photo</h3><p>Take today's photo and keep it stored locally on this device.</p></div>
         </article>
       </section>
@@ -144,7 +144,7 @@
       <section class="faith card jump-target" id="faith">
         <div class="faith-top">
           <div><p class="eyebrow">FAITH • BONUS HABIT</p><h2 id="verseRef">1 Corinthians 9:27</h2></div>
-          <button id="faithCheck" class="faith-check">Prayer + Scripture ○</button>
+          <button id="faithCheck" class="faith-check" type="button">Prayer + Scripture ○</button>
         </div>
         <p id="faithPrompt">Discipline your body instead of letting your impulses lead the day.</p>
       </section>
@@ -154,7 +154,7 @@
         <textarea id="notes" rows="4" maxlength="800" placeholder="Workout notes, wins, temptations, gratitude, prayer..."></textarea>
       </section>
 
-      <button id="completeDayBtn" class="complete-btn" disabled>Finish all requirements to win today</button>
+      <button id="completeDayBtn" class="complete-btn" type="button" disabled>Finish all requirements to win today</button>
 
       <section class="history-section jump-target" id="progress">
         <div class="section-heading"><div><p class="eyebrow">THE 75</p><h2>Challenge map</h2></div></div>
@@ -163,8 +163,8 @@
       </section>
 
       <section class="data-actions card">
-        <div><h3>Your data belongs to you</h3><p>Export a backup or restore one later.</p></div>
-        <div class="quick-row"><button id="exportBtn" class="small-btn">Export backup</button><label class="small-btn ghost file-label">Import backup<input id="importInput" type="file" accept="application/json" /></label></div>
+        <div><h3>Your data belongs to you</h3><p>Export or restore a full backup including checks, notes, feelings, meal logs, timers, and progress photos.</p></div>
+        <div class="quick-row"><button id="exportBtn" class="small-btn" type="button">Export backup</button><label class="small-btn ghost file-label">Import backup<input id="importInput" type="file" accept="application/json" /></label></div>
       </section>
     </main>
 
@@ -181,18 +181,19 @@
   </nav>
 
   <dialog id="settingsDialog">
-    <form method="dialog" class="dialog-card" id="settingsForm">
-      <div class="dialog-head"><div><p class="eyebrow">SETTINGS</p><h2>Your challenge</h2></div><button value="cancel" class="icon-btn" aria-label="Close settings">×</button></div>
+    <form class="dialog-card" id="settingsForm">
+      <div class="dialog-head"><div><p class="eyebrow">SETTINGS</p><h2>Your challenge</h2></div><button id="settingsCloseBtn" type="button" class="icon-btn" aria-label="Close settings">×</button></div>
       <label>Name<input id="nameInput" type="text" maxlength="40" placeholder="Joshua" /></label>
       <label>Start date<input id="startDateInput" type="date" /></label>
       <label>Daily water goal (oz)<input id="waterGoalInput" type="number" min="1" max="256" step="1" /></label>
       <label class="switch-row"><span><strong>Strict mode</strong><small>Flag a restart if any past day is incomplete.</small></span><input id="strictInput" type="checkbox" /></label>
-      <button id="saveSettingsBtn" value="default" class="complete-btn">Save settings</button>
-      <button id="restartBtn" value="cancel" type="button" class="danger-outline">Restart challenge from Day 1</button>
+      <button id="saveSettingsBtn" type="submit" class="complete-btn">Save settings</button>
+      <button id="restartBtn" type="button" class="danger-outline">Restart challenge from Day 1</button>
     </form>
   </dialog>
 
   <script src="plans.js" defer></script>
+  <script src="photo-store.js" defer></script>
   <script src="app.js" defer></script>
   <script src="next-action.js" defer></script>
   <script src="history-journal.js" defer></script>
