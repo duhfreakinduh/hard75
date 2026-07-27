@@ -3,31 +3,19 @@
 
   const MAIN_KEY = "hard75-state-v1";
   const JOURNAL_KEY = "hard75-journal-v1";
-  const PHOTO_DB = "hard75-photo-db";
-  const PHOTO_STORE = "photos";
   let historyPhotoUrl = null;
 
   const $ = id => document.getElementById(id);
+  const photos = () => window.HARD75_PHOTOS;
 
   function readJSON(key, fallback) {
-    try {
-      return JSON.parse(localStorage.getItem(key)) || fallback;
-    } catch {
-      return fallback;
-    }
+    try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+    catch { return fallback; }
   }
 
-  function mainState() {
-    return readJSON(MAIN_KEY, null);
-  }
-
-  function journalState() {
-    return readJSON(JOURNAL_KEY, { days: {} });
-  }
-
-  function saveJournal(value) {
-    localStorage.setItem(JOURNAL_KEY, JSON.stringify(value));
-  }
+  function mainState() { return readJSON(MAIN_KEY, null); }
+  function journalState() { return readJSON(JOURNAL_KEY, { days: {} }); }
+  function saveJournal(value) { localStorage.setItem(JOURNAL_KEY, JSON.stringify(value)); }
 
   function localISODate(date) {
     const y = date.getFullYear();
@@ -36,22 +24,30 @@
     return `${y}-${m}-${d}`;
   }
 
-  function parseDate(value) {
-    const [y, m, d] = String(value).split("-").map(Number);
-    return new Date(y, m - 1, d);
+  function calendarStamp(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+    if (!match) return NaN;
+    return Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+
+  function parseLocalDate(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+    if (!match) return new Date();
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
   }
 
   function currentDayNumber(main) {
     if (!main?.settings?.startDate) return 1;
-    const start = parseDate(main.settings.startDate);
-    const today = parseDate(localISODate(new Date()));
+    const start = calendarStamp(main.settings.startDate);
+    const today = calendarStamp(localISODate(new Date()));
+    if (!Number.isFinite(start) || !Number.isFinite(today)) return 1;
     return Math.min(75, Math.max(1, Math.floor((today - start) / 86400000) + 1));
   }
 
   function dateForDay(main, dayNum) {
-    const start = parseDate(main.settings.startDate);
-    start.setDate(start.getDate() + dayNum - 1);
-    return start;
+    const date = parseLocalDate(main.settings.startDate);
+    date.setDate(date.getDate() + dayNum - 1);
+    return date;
   }
 
   function formatDate(main, dayNum) {
@@ -64,56 +60,22 @@
   }
 
   function entryKey(main, dayNum) {
-    return `${main.settings?.startDate || "start"}:day:${dayNum}`;
+    return photos()?.key(main.settings?.startDate || "start", dayNum) || `${main.settings?.startDate || "start"}:day:${dayNum}`;
   }
 
   function getJournalEntry(main, dayNum) {
     const journal = journalState();
-    const key = entryKey(main, dayNum);
-    return journal.days[key] || { mood: "", feeling: "" };
+    const value = journal.days?.[entryKey(main, dayNum)];
+    return value && typeof value === "object" ? { mood: "", feeling: "", ...value } : { mood: "", feeling: "" };
   }
 
   function updateJournalEntry(main, dayNum, patch) {
     const journal = journalState();
+    if (!journal.days || typeof journal.days !== "object") journal.days = {};
     const key = entryKey(main, dayNum);
-    journal.days[key] = {
-      mood: "",
-      feeling: "",
-      ...(journal.days[key] || {}),
-      ...patch
-    };
+    journal.days[key] = { mood: "", feeling: "", ...(journal.days[key] || {}), ...patch };
     saveJournal(journal);
     return journal.days[key];
-  }
-
-  function openPhotoDB() {
-    return new Promise((resolve, reject) => {
-      if (!("indexedDB" in window)) {
-        reject(new Error("Photo storage is unavailable."));
-        return;
-      }
-      const request = indexedDB.open(PHOTO_DB, 1);
-      request.onupgradeneeded = () => {
-        const db = request.result;
-        if (!db.objectStoreNames.contains(PHOTO_STORE)) {
-          db.createObjectStore(PHOTO_STORE);
-        }
-      };
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async function loadPhoto(key) {
-    const db = await openPhotoDB();
-    const value = await new Promise((resolve, reject) => {
-      const tx = db.transaction(PHOTO_STORE, "readonly");
-      const request = tx.objectStore(PHOTO_STORE).get(key);
-      request.onsuccess = () => resolve(request.result || null);
-      request.onerror = () => reject(request.error);
-    });
-    db.close();
-    return value;
   }
 
   function completionCount(day, waterGoal) {
@@ -138,13 +100,7 @@
   }
 
   function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>'"]/g, ch => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      "'": "&#39;",
-      '"': "&quot;"
-    }[ch]));
+    return String(value ?? "").replace(/[&<>'"]/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[ch]));
   }
 
   function injectFeelingCard() {
@@ -161,7 +117,7 @@
           <p class="eyebrow">DAILY CHECK-IN</p>
           <h2>How are you feeling?</h2>
         </div>
-        <span id="moodSavedLabel" class="mood-saved-label"></span>
+        <span id="moodSavedLabel" class="mood-saved-label" aria-live="polite"></span>
       </div>
       <div class="daily-mood-row" role="group" aria-label="How are you feeling today?">
         <button type="button" class="daily-mood-btn" data-journal-mood="rough"><span>😣</span><small>Rough</small></button>
@@ -192,8 +148,6 @@
       updateJournalEntry(main, currentDayNumber(main), { feeling: event.target.value });
       $("moodSavedLabel").textContent = "Saved";
     });
-
-    renderFeelingCard();
   }
 
   function renderFeelingCard() {
@@ -238,37 +192,21 @@
           </div>
           <button id="dayHistoryClose" type="button" class="icon-btn" aria-label="Close day history">×</button>
         </div>
-
         <div id="dayHistoryResult" class="day-history-result"></div>
-
-        <div id="dayHistoryPhotoWrap" class="day-history-photo-wrap hidden">
-          <img id="dayHistoryPhoto" alt="Progress photo for this challenge day" />
-        </div>
+        <div id="dayHistoryPhotoWrap" class="day-history-photo-wrap hidden"><img id="dayHistoryPhoto" alt="Progress photo for this challenge day" /></div>
         <div id="dayHistoryNoPhoto" class="day-history-no-photo">No progress photo saved for this day.</div>
-
         <div id="dayHistoryMood" class="day-history-mood"></div>
-
         <div id="dayHistoryStats" class="day-history-stats"></div>
         <div id="dayHistoryChecklist" class="day-history-checklist"></div>
-
-        <div class="day-history-copy">
-          <strong>How I felt</strong>
-          <p id="dayHistoryFeeling">No feeling note saved.</p>
-        </div>
-
-        <div class="day-history-copy">
-          <strong>Daily notes</strong>
-          <p id="dayHistoryNotes">No notes saved.</p>
-        </div>
+        <div class="day-history-copy"><strong>How I felt</strong><p id="dayHistoryFeeling">No feeling note saved.</p></div>
+        <div class="day-history-copy"><strong>Daily notes</strong><p id="dayHistoryNotes">No notes saved.</p></div>
       </div>
     `;
     document.body.appendChild(dialog);
 
     $("dayHistoryClose").addEventListener("click", closeHistory);
     dialog.addEventListener("close", releaseHistoryPhoto);
-    dialog.addEventListener("click", event => {
-      if (event.target === dialog) closeHistory();
-    });
+    dialog.addEventListener("click", event => { if (event.target === dialog) closeHistory(); });
   }
 
   function historyCheck(label, done) {
@@ -278,7 +216,6 @@
   async function openHistory(dayNum) {
     const main = mainState();
     if (!main) return;
-
     const currentDay = currentDayNumber(main);
     if (dayNum > currentDay) return;
 
@@ -287,26 +224,22 @@
     const waterGoal = Number(main.settings?.waterGoal || 128);
     const count = completionCount(day, waterGoal);
     const [moodIcon, moodLabel] = moodInfo(entry.mood);
+    const hasJournal = !!entry.mood || !!entry.feeling?.trim() || !!day.notes?.trim();
 
     $("dayHistoryTitle").textContent = `Day ${dayNum} of 75`;
     $("dayHistoryDate").textContent = formatDate(main, dayNum);
 
     const result = $("dayHistoryResult");
-    result.textContent = day.won ? "DAY WON ✓" : count ? `${count} OF 6 REQUIREMENTS` : "NO ENTRY SAVED";
+    result.textContent = day.won ? "DAY WON ✓" : count ? `${count} OF 6 REQUIREMENTS` : hasJournal ? "JOURNAL ENTRY" : "NO ENTRY SAVED";
     result.classList.toggle("won", !!day.won);
 
-    $("dayHistoryMood").innerHTML = `
-      <span>${moodIcon}</span>
-      <div><small>HOW I FELT</small><strong>${escapeHTML(moodLabel)}</strong></div>
-    `;
-
+    $("dayHistoryMood").innerHTML = `<span>${moodIcon}</span><div><small>HOW I FELT</small><strong>${escapeHTML(moodLabel)}</strong></div>`;
     $("dayHistoryStats").innerHTML = `
       <article><span>Water</span><strong>${Number(day.water || 0)} oz</strong></article>
       <article><span>Reading</span><strong>${Number(day.pages || 0)} pages</strong></article>
       <article><span>Gym</span><strong>${escapeHTML(String(day.gymLevel || "floor").toUpperCase())}</strong></article>
       <article><span>Outside</span><strong>${escapeHTML(String(day.outdoorLevel || "floor").toUpperCase())}</strong></article>
     `;
-
     $("dayHistoryChecklist").innerHTML = [
       historyCheck("Meal plan", !!day.diet),
       historyCheck("Workout #1", !!day.workout1),
@@ -316,7 +249,6 @@
       historyCheck("Progress photo", !!day.photo),
       historyCheck("Prayer + Scripture", !!day.faith)
     ].join("");
-
     $("dayHistoryFeeling").textContent = entry.feeling?.trim() || "No feeling note saved.";
     $("dayHistoryNotes").textContent = day.notes?.trim() || "No notes saved.";
 
@@ -326,55 +258,49 @@
     $("dayHistoryNoPhoto").textContent = "No progress photo saved for this day.";
     $("dayHistoryNoPhoto").classList.remove("hidden");
 
-    if (day.photo) {
+    if (day.photo && photos()) {
       try {
-        const blob = await loadPhoto(entryKey(main, dayNum));
+        const blob = await photos().load(entryKey(main, dayNum));
         if (blob) {
           historyPhotoUrl = URL.createObjectURL(blob);
           $("dayHistoryPhoto").src = historyPhotoUrl;
           $("dayHistoryPhotoWrap").classList.remove("hidden");
           $("dayHistoryNoPhoto").classList.add("hidden");
         }
-      } catch {
+      } catch (error) {
+        console.error(error);
         $("dayHistoryNoPhoto").textContent = "This photo could not be opened on this device.";
       }
     }
 
-    $("dayHistoryDialog").showModal();
+    const dialog = $("dayHistoryDialog");
+    if (!dialog.open) dialog.showModal();
   }
 
   function releaseHistoryPhoto() {
-    if (historyPhotoUrl) {
-      URL.revokeObjectURL(historyPhotoUrl);
-      historyPhotoUrl = null;
-    }
+    if (historyPhotoUrl) URL.revokeObjectURL(historyPhotoUrl);
+    historyPhotoUrl = null;
   }
 
   function closeHistory() {
     releaseHistoryPhoto();
-    $("dayHistoryDialog")?.close();
+    const dialog = $("dayHistoryDialog");
+    if (dialog?.open) dialog.close();
   }
 
   function watchMapClicks() {
     document.addEventListener("click", event => {
-      const dayButton = event.target.closest("#historyGrid .day-dot");
-      if (!dayButton || dayButton.classList.contains("future")) return;
-      const dayNum = Number(dayButton.textContent);
-      if (Number.isInteger(dayNum) && dayNum >= 1 && dayNum <= 75) {
-        openHistory(dayNum);
-      }
+      const dayButton = event.target.closest("#historyGrid .day-dot[data-history-day]");
+      if (!dayButton || dayButton.disabled) return;
+      const dayNum = Number(dayButton.dataset.historyDay);
+      if (Number.isInteger(dayNum) && dayNum >= 1 && dayNum <= 75) openHistory(dayNum);
     });
   }
 
-  function makeMapButtonsFeelClickable() {
-    const grid = $("historyGrid");
-    if (!grid) return;
-    grid.querySelectorAll(".day-dot").forEach(button => {
-      if (!button.classList.contains("future")) {
-        button.setAttribute("aria-label", `Open Day ${button.textContent} history`);
-        button.title = `Open Day ${button.textContent} history`;
-      }
-    });
+  function handleStateChange(event) {
+    renderFeelingCard();
+    const reason = event?.detail?.reason || "";
+    if (["restart", "reset-day", "import", "settings"].includes(reason)) closeHistory();
   }
 
   function init() {
@@ -382,19 +308,12 @@
     injectMapHint();
     injectHistoryDialog();
     watchMapClicks();
-    makeMapButtonsFeelClickable();
-
-    const grid = $("historyGrid");
-    if (grid) {
-      new MutationObserver(() => makeMapButtonsFeelClickable()).observe(grid, { childList: true });
-    }
-
-    setInterval(renderFeelingCard, 2000);
+    renderFeelingCard();
+    window.addEventListener("hard75:state-change", handleStateChange);
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init, { once: true });
-  } else {
-    init();
-  }
+  window.addEventListener("pagehide", releaseHistoryPhoto);
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
+  else init();
 })();
