@@ -1,0 +1,267 @@
+/* Challenge history + daily feeling journal */
+.daily-feeling-card {
+  margin-top: 18px;
+}
+
+.daily-feeling-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.daily-feeling-head h2 {
+  margin-bottom: 0;
+}
+
+.mood-saved-label {
+  min-height: 18px;
+  color: #86efac;
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+.daily-mood-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.daily-mood-btn {
+  min-width: 0;
+  border: 1px solid #2b3950;
+  border-radius: 11px;
+  padding: 9px 2px 7px;
+  background: #0b1220;
+  color: #aebbd0;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+}
+
+.daily-mood-btn span {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.daily-mood-btn small {
+  font-size: .56rem;
+  font-weight: 850;
+}
+
+.daily-mood-btn.active {
+  border-color: var(--accent);
+  background: rgba(249,115,22,.14);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(249,115,22,.18);
+}
+
+.challenge-map-hint {
+  margin: -3px 2px 10px;
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+#historyGrid .day-dot:not(.future) {
+  cursor: pointer;
+}
+
+#historyGrid .day-dot:not(.future):active {
+  transform: scale(.9);
+}
+
+.day-history-dialog {
+  width: min(520px, calc(100% - 20px));
+}
+
+.day-history-card {
+  max-height: min(87vh, 760px);
+  overflow-y: auto;
+}
+
+.day-history-date {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+.day-history-result {
+  border: 1px solid #39465b;
+  border-radius: 11px;
+  padding: 9px 11px;
+  color: #cbd5e1;
+  background: #0b1220;
+  font-size: .7rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.day-history-result.won {
+  border-color: rgba(34,197,94,.42);
+  background: rgba(22,101,52,.22);
+  color: #bbf7d0;
+}
+
+.day-history-photo-wrap {
+  overflow: hidden;
+  border: 1px solid #334155;
+  border-radius: 15px;
+  background: #080d18;
+}
+
+.day-history-photo-wrap img {
+  display: block;
+  width: 100%;
+  max-height: 440px;
+  object-fit: contain;
+}
+
+.day-history-no-photo {
+  min-height: 88px;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  border: 1px dashed #334155;
+  border-radius: 13px;
+  color: #718096;
+  text-align: center;
+  font-size: .76rem;
+}
+
+.day-history-mood {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  border: 1px solid #2d3a50;
+  border-radius: 12px;
+  background: #0b1220;
+}
+
+.day-history-mood > span {
+  font-size: 1.6rem;
+}
+
+.day-history-mood div {
+  display: grid;
+}
+
+.day-history-mood small {
+  color: var(--muted);
+  font-size: .56rem;
+  letter-spacing: .11em;
+  font-weight: 900;
+}
+
+.day-history-mood strong {
+  font-size: .88rem;
+}
+
+.day-history-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.day-history-stats article {
+  padding: 9px 5px;
+  border: 1px solid #2b384c;
+  border-radius: 10px;
+  background: #0b1220;
+  text-align: center;
+}
+
+.day-history-stats span {
+  display: block;
+  color: var(--muted);
+  font-size: .55rem;
+}
+
+.day-history-stats strong {
+  display: block;
+  margin-top: 2px;
+  font-size: .72rem;
+}
+
+.day-history-checklist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.day-history-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #2b384c;
+  border-radius: 9px;
+  color: #8795aa;
+  font-size: .7rem;
+}
+
+.day-history-check.done {
+  border-color: rgba(34,197,94,.28);
+  background: rgba(22,101,52,.13);
+  color: #dcfce7;
+}
+
+.day-history-check span {
+  width: 13px;
+  flex: 0 0 auto;
+  font-weight: 900;
+}
+
+.day-history-copy {
+  padding-top: 10px;
+  border-top: 1px solid #263349;
+}
+
+.day-history-copy strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: .76rem;
+}
+
+.day-history-copy p {
+  margin: 0;
+  color: #aab6c7;
+  font-size: .8rem;
+  white-space: pre-wrap;
+}
+
+/* Keep the bottom navigation compact so it does not dominate the phone screen. */
+.app-shell {
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav.jump-nav {
+  bottom: max(5px, env(safe-area-inset-bottom));
+  width: min(430px, calc(100% - 14px));
+  gap: 2px;
+  padding: 3px;
+  border-radius: 12px;
+  justify-content: center;
+}
+
+.bottom-nav.jump-nav a {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 6px 2px;
+  border-radius: 8px;
+  font-size: .58rem;
+}
+
+@media (max-width: 390px) {
+  .bottom-nav.jump-nav a {
+    font-size: .54rem;
+    padding-inline: 1px;
+  }
+}
+
+@media (max-width: 560px) {
+  .day-history-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
